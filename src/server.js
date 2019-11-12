@@ -3,7 +3,6 @@ const app = express();
 const port = 5000;
 const data = require('../data.json');
 
-
 app.get('/movies', (req,res) => {
     res.send(data.sort((a,b) => a.year - b.year));
 });
