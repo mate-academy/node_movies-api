@@ -12,7 +12,7 @@ app.get('/movies', (req, res) => {
     if (err) {
       res.status(500).json({
         statusCode: 500,
-        errorMessage: err,
+        error: err,
         errorDescription: 'Error read file data.json',
       });
     } else {
