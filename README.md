@@ -31,3 +31,20 @@ Use data from `data.json` to create express server with next endpoints:
 1. Create a DELETE API on `/movies/<id>` that removes the specified movie from the `data.json`. Response without content with 204 status code.
 
 1. Make sure your server is fault-tolerant and will continue to serve clients even after receiving an invalid request. For instance, if the string "im-a-text-not-a-number" is passed as a release year for a movie, the server shouldn’t crash.
+
+## MVC (without View)
+
+Separate application logic into
+- model(works with data)
+- controllers(handle requests, send responses)
+
+1. Create `models` folder and `movies-model.js` inside. Module should export object with methods to retrieve or update data in file. Methods may accept arguments and should return promises.
+
+1. Create `controllers` folder and `movies-controller.js` inside. Module should export object with 
+methods according to each endpoint. Controller should import and use movies model.
+
+1. Create file `router.js`. Create and export express.Router there. Import controller and add all application routes inside `router.js`. Also, you could add middlewares like `express.json()` here.
+
+1. For now `server.js` should only create `express` application, import and use `router` and start server listening.
+
+You can create any additional files you need. You may use [this article](https://medium.com/@dinyangetoh/how-to-build-simple-restful-api-with-nodejs-expressjs-and-mongodb-99348012925d) as an example.
