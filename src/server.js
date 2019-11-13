@@ -16,7 +16,7 @@ app.get('/movies', (req, res) => {
         errorDescription: 'Error read file data.json',
       });
     } else {
-      let films = JSON.parse(content);
+      const films = JSON.parse(content);
       res.json(
         films.sort((a, b) => Number(a.year) - Number(b.year))
       );
@@ -35,7 +35,7 @@ app.get('/movies/titles', (req, res) => {
         errorDescription: 'Error read file data.json',
       });
     } else {
-      let filmsTitles = year 
+      const filmsTitles = year 
       ? JSON.parse(content)
         .filter(film => film.year === year)
         .map(film => film.title) 
@@ -52,8 +52,8 @@ app.get('/movies/titles', (req, res) => {
 
 });
 
-app.get('/movies/:idFilm', (req, res) => {
-  const { idFilm } = req.params;
+app.get('/movies/:filmId', (req, res) => {
+  const { filmId } = req.params;
 
   fs.readFile(path.join(__dirname, '../data.json'), (err, content) => {
     if (err) {
@@ -64,7 +64,7 @@ app.get('/movies/:idFilm', (req, res) => {
       });
     } else {
       const films = JSON.parse(content);
-      const film = films.find(item => item.id === idFilm);
+      const film = films.find(item => item.id === filmId);
       
       if (film) {
         res.json(film)
