@@ -47,4 +47,6 @@ methods according to each endpoint. Controller should import and use movies mode
 
 1. For now `server.js` should only create `express` application, import and use `router` and start server listening.
 
+1. Use environment variable for server port. Use `path` library to join file system paths.
+
 You can create any additional files you need. You may use [this article](https://medium.com/@dinyangetoh/how-to-build-simple-restful-api-with-nodejs-expressjs-and-mongodb-99348012925d) as an example.
