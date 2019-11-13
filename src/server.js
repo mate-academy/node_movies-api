@@ -1,3 +1,5 @@
+'use strict'
+
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
@@ -14,7 +16,7 @@ app.get('/movies', (req, res) => {
         errorDescription: 'Error read file data.json',
       });
     } else {
-      films = JSON.parse(content);
+      let films = JSON.parse(content);
       res.json(
         films.sort((a, b) => Number(a.year) - Number(b.year))
       );
@@ -29,11 +31,11 @@ app.get('/movies/titles', (req, res) => {
     if (err) {
       res.status(500).json({
         statusCode: 500,
-        errorMessage: err,
+        error: err,
         errorDescription: 'Error read file data.json',
       });
     } else {
-      filmsTitles = year 
+      let filmsTitles = year 
       ? JSON.parse(content)
         .filter(film => film.year === year)
         .map(film => film.title) 
@@ -43,33 +45,33 @@ app.get('/movies/titles', (req, res) => {
       res.send(
         filmsTitles
         .sort((a, b) => a.localeCompare(b))
-        .reduce((acc, title) => `${acc}\n${title}`, "")
+        .map(title => title).join('\n')
       );
     }
   });
 
 });
 
-app.get('/movies/:filmId', (req, res) => {
-  const idFilm = req.params.filmId.slice(1);
+app.get('/movies/:idFilm', (req, res) => {
+  const { idFilm } = req.params;
 
   fs.readFile(path.join(__dirname, '../data.json'), (err, content) => {
     if (err) {
       res.status(500).json({
         statusCode: 500,
-        errorMessage: err,
+        error: err,
         errorDescription: 'Error read file data.json',
       });
     } else {
-      films = JSON.parse(content);
-      film = films.find(item => item.id === idFilm);
+      const films = JSON.parse(content);
+      const film = films.find(item => item.id === idFilm);
       
       if (film) {
         res.json(film)
       } else {
         res.status(404).json({
           statusCode: 404,
-          errorMessage: err,
+          error: err,
           errorDescription: 'Error films id not found',
         });
       }
