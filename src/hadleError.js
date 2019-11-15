@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 exports.createErrorObject = function(code, err) {
   this.statusCode = code;

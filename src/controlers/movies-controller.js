@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 const moviesModel = require('../models/movies-model');
 const { createErrorObject } = require('../hadleError');
