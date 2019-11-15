@@ -3,19 +3,20 @@
 const router = require('express').Router();
 const parseJson = require('express').json();
 
+const { checkContentType } = require('./middleware'); 
 const controlerMovies = require('./controlers/movies-controller');
 
-router.route('/movies')
+router.route('/')
   .get(controlerMovies.viewAllMovies)
-  .post(parseJson, controlerMovies.createMovie);
+  .post(checkContentType, parseJson, controlerMovies.createMovie);
 
-router.route('/movies/titles')
+router.route('/titles')
   .get(controlerMovies.viewTitles);
 
-router.route('/movies/:filmId')
+router.route('/:filmId')
   .get(controlerMovies.viewMovieById)
-  .post(parseJson, controlerMovies.changeMovies)
-  .patch(parseJson, controlerMovies.changeMovies)
-  .delete(parseJson, controlerMovies.deleteMovie);
+  .post(checkContentType, parseJson, controlerMovies.changeMovie)
+  .patch(checkContentType, parseJson, controlerMovies.changeMovie)
+  .delete(controlerMovies.deleteMovie);
 
 module.exports = router;

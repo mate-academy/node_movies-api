@@ -18,9 +18,8 @@ class MoviesModel {
       const fileContent = await readFile(this.jsonPath);
 
       return (
-        JSON.
-        parse(fileContent).
-        sort((film1, film2) => Number(film1.year) - Number(film2.year))
+        JSON.parse(fileContent)
+          .sort((film1, film2) => Number(film1.year) - Number(film2.year))
       );
   }
 
@@ -35,19 +34,16 @@ class MoviesModel {
 
     const filmsTitles = year 
       ? JSON.parse(fileContent)
-        .filter(film => film.year === year)
-        .map(film => film.title) 
+          .filter(film => film.year === year)
+          .map(film => film.title) 
       : JSON.parse(fileContent)
-        .map(film => film.title);
+          .map(film => film.title);
     
-    return (
-      filmsTitles
-      .sort((a, b) => a.localeCompare(b)).join('\n')
-    );
+    return filmsTitles.sort((a, b) => a.localeCompare(b)).join('\n');
   }
 
   async addMovie(newMovie) {
-    const {title, year, imdbRating} = newMovie;
+    const { title, year, imdbRating } = newMovie;
     const movie = {
       imdbRating,
       title,
@@ -70,36 +66,40 @@ class MoviesModel {
 
     const fileContent = await readFile(this.jsonPath);
 
-    let findMovie = JSON.parse(fileContent).find(film => film.id === id);
+    const findMovie = JSON.parse(fileContent).find(film => film.id === id);
     
     if(findMovie) {
-      findMovie = {
-        id,
+      const chagedMovie = {
+        imdbRating: imdbRating || findMovie.imdbRating,
         title: title || findMovie.title,
         year: year || findMovie.year,
-        imdbRating: imdbRating || findMovie.imdbRating,
+        id
       }
-      
+
       await writeFile(
         this.jsonPath, 
         JSON.stringify(
           [
             ...JSON.parse(fileContent).filter(film => film.id !== id), 
-            findMovie,
+            chagedMovie,
           ], null, 2));
-    }
-    
-    return findMovie;
+      
+      return chagedMovie;
+    } 
   }
 
   async deleteMovie(id) {
     const fileContent = await readFile(this.jsonPath);
 
-    await writeFile(
-      this.jsonPath, 
-      JSON.stringify(
-        JSON.parse(fileContent).filter(film => film.id !== id), 
-        null, 2));
+    const findMovie = JSON.parse(fileContent).find(film => film.id === id);
+    
+    if(findMovie) {
+      await writeFile(
+        this.jsonPath, 
+        JSON.stringify(
+          JSON.parse(fileContent).filter(film => film.id !== id), 
+          null, 2));
+    }
   }
 }
 
