@@ -1,3 +1,5 @@
+'use strict'
+
 const { createErrorObject } = require('./hadleError');
 
 exports.checkContentType = (req, res, next) => {
