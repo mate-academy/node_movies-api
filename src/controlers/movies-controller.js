@@ -14,7 +14,7 @@ exports.viewMovieById = (req, res) => {
 
   moviesModel.getMovieById(filmId)
     .then(data => {
-      if(data) {
+      if (data) {
         return res.json(data);
       } else {
         return res.status(404).json(new createErrorObject(404, null));
@@ -42,7 +42,7 @@ exports.changeMovie = (req, res) => {
 
   moviesModel.changeMovie(filmId, req.body)
     .then(data => {
-      if(data) {
+      if (data) {
         return res.json(data);
       } else {
         return res.status(404).json(new createErrorObject(404, null));

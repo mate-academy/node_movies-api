@@ -68,7 +68,7 @@ class MoviesModel {
 
     const findMovie = JSON.parse(fileContent).find(film => film.id === id);
     
-    if(findMovie) {
+    if (findMovie) {
       const chagedMovie = {
         imdbRating: imdbRating || findMovie.imdbRating,
         title: title || findMovie.title,
@@ -93,7 +93,7 @@ class MoviesModel {
 
     const findMovie = JSON.parse(fileContent).find(film => film.id === id);
     
-    if(findMovie) {
+    if (findMovie) {
       await writeFile(
         this.jsonPath, 
         JSON.stringify(
