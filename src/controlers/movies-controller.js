@@ -1,12 +1,12 @@
 'use strict';
 
 const moviesModel = require('../models/movies-model');
-const { hadleError } = require('../hadleError');
+const { handleError } = require('../handleError');
 
 exports.viewAllMovies = (req, res) => {
   moviesModel.getList()
     .then(data => res.json(data))
-    .catch(err => hadleError(res, 500, err));
+    .catch(err => handleError(res, 500, err));
 }
 
 exports.viewMovieById = (req, res) => {
@@ -17,10 +17,10 @@ exports.viewMovieById = (req, res) => {
       if (data) {
         res.json(data);
       } else {
-        hadleError(res, 404, 'Movie id do not found ');
+        handleError(res, 404, 'Movie id do not found ');
       }
     })
-    .catch(err => hadleError(res, 500, err));
+    .catch(err => handleError(res, 500, err));
 }
 
 exports.viewTitles = (req, res) => {
@@ -28,13 +28,13 @@ exports.viewTitles = (req, res) => {
   
   moviesModel.getMoviesTitles(year)
     .then(data => res.send(data))
-    .catch(err => hadleError(res, 500, err));
+    .catch(err => handleError(res, 500, err));
 }
 
 exports.createMovie = (req, res) => {
   moviesModel.addMovie(req.body)
     .then(data => res.json(data))
-    .catch(err => hadleError(res, 500, err));
+    .catch(err => handleError(res, 500, err));
 }
 
 exports.changeMovie = (req, res) => {
@@ -45,10 +45,10 @@ exports.changeMovie = (req, res) => {
       if (data) {
         res.json(data);
       } else {
-        hadleError(res, 404, 'Movie id do not found ');;
+        handleError(res, 404, 'Movie id do not found ');;
       }
     })
-    .catch(err => hadleError(res, 500, err));
+    .catch(err => handleError(res, 500, err));
 }
 
 exports.deleteMovie = (req, res) => {
@@ -56,5 +56,5 @@ exports.deleteMovie = (req, res) => {
 
   moviesModel.deleteMovie(filmId)
     .then(() => res.sendStatus(204))
-    .catch(err => hadleError(res, 500, err));
+    .catch(err => handleError(res, 500, err));
 }

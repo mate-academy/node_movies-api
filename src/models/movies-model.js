@@ -97,8 +97,7 @@ class MoviesModel {
       await writeFile(
         this.jsonPath, 
         JSON.stringify(
-          JSON.parse(fileContent).filter(film => film.id !== id), 
-          null, 2));
+          JSON.parse(fileContent).filter(film => film.id !== id), null, 2));
     }
   }
 }
