@@ -1,103 +1,90 @@
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const uuidv4 = require('uuid/v4');
-const { promisify } = require('util');
-
-const readFile = promisify(fs.readFile);
-const writeFile = promisify(fs.writeFile);
-const JSON_PATH = path.join(__dirname, '../../data.json');
+const db = require('../db');
 
 class MoviesModel {
-  constructor(jsonPath = JSON_PATH) {
-      this.jsonPath = jsonPath;
-  }
 
   async getList() {
-      const fileContent = await readFile(this.jsonPath);
+      const query = {
+        text: 'SELECT * FROM movie ORDER BY year ASC;',
+        values: [],
+      }
+      const res = await db.query(query);
 
-      return (
-        JSON.parse(fileContent)
-          .sort((film1, film2) => Number(film1.year) - Number(film2.year))
-      );
+      return res.rows;
   }
 
   async getMovieById(id) {
-    const fileContent = await readFile(this.jsonPath);
+    const query = {
+      text: 'SELECT * FROM movie WHERE id = $1;',
+      values: [id],
+    };
+    const res = await db.query(query);
 
-    return JSON.parse(fileContent).find(item => item.id === id);
+    return res.rows[0];
   }
 
   async getMoviesTitles(year) {
-    const fileContent = await readFile(this.jsonPath);
+    const byYear = year ? 'WHERE year = $1' : '';
+    const query = {
+      text: `SELECT title FROM movie ${byYear} ORDER BY year ASC;`,
+      values: year ? [year]: [],
+    };
+    const res = await db.query(query);
 
-    const filmsTitles = year 
-      ? JSON.parse(fileContent)
-          .filter(film => film.year === year)
-          .map(film => film.title) 
-      : JSON.parse(fileContent)
-          .map(film => film.title);
-    
-    return filmsTitles.sort((a, b) => a.localeCompare(b)).join('\n');
+    return res.rows.map(item => item.title).join('\n');
   }
 
   async addMovie(newMovie) {
     const { title, year, imdbRating } = newMovie;
-    const movie = {
-      imdbRating,
-      title,
-      year,
-      id: uuidv4()
+    const query = {
+      text: 'INSERT INTO movie(title, year, imdbrating) VALUES($1, $2, $3) RETURNING *;',
+      values: [title, year, imdbRating],
     }
 
-    const fileContent = await readFile(this.jsonPath);
-
-    await writeFile(
-      this.jsonPath, 
-      JSON.stringify([...JSON.parse(fileContent), movie], null, 2)
-      );
-    
-    return movie;
+    const res = await db.query(query);
+    return res.rows[0];
   }
 
   async changeMovie(id, newDetails) {
     const {title, year, imdbRating} = newDetails;
+    const queryFind = {
+      text: 'SELECT * FROM movie WHERE id = $1;',
+      values: [id],
+    };
+    const findMovie = await db.query(queryFind);
 
-    const fileContent = await readFile(this.jsonPath);
-
-    const findMovie = JSON.parse(fileContent).find(film => film.id === id);
-    
     if (findMovie) {
       const chagedMovie = {
-        imdbRating: imdbRating || findMovie.imdbRating,
-        title: title || findMovie.title,
-        year: year || findMovie.year,
-        id
+        imdbRating: imdbRating || findMovie.rows[0].imdbrating,
+        title: title || findMovie.rows[0].title,
+        year: year || findMovie.rows[0].year,
       }
 
-      await writeFile(
-        this.jsonPath, 
-        JSON.stringify(
-          [
-            ...JSON.parse(fileContent).filter(film => film.id !== id), 
-            chagedMovie,
-          ], null, 2));
-      
-      return chagedMovie;
-    } 
+      const queryUpdate = {
+        text: 'UPDATE movie SET imdbrating= $2, title = $3, year = $4 WHERE id = $1 RETURNING *;',
+        values: [id, chagedMovie.imdbRating, chagedMovie.title, chagedMovie.year],
+      };
+
+      const res = await db.query(queryUpdate);
+      return res.rows[0]
+    }
   }
 
   async deleteMovie(id) {
-    const fileContent = await readFile(this.jsonPath);
+    const queryFind = {
+      text: 'SELECT * FROM movie WHERE id = $1;',
+      values: [id],
+    };
+    const queryDelete = {
+      text: 'DELETE FROM movie WHERE id = $1;',
+      values: [id],
+    };
 
-    const findMovie = JSON.parse(fileContent).find(film => film.id === id);
+    const findMovie = await db.query(queryFind);
     
     if (findMovie) {
-      await writeFile(
-        this.jsonPath, 
-        JSON.stringify(
-          JSON.parse(fileContent).filter(film => film.id !== id), null, 2));
+      await db.query(queryDelete);
     }
   }
 }
