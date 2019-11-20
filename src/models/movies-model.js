@@ -4,11 +4,11 @@ const db = require('../db');
 
 class MoviesModel {
 
-  async getList() {
-      const query = {
-        text: 'SELECT * FROM movie ORDER BY year ASC;',
-        values: [],
-      }
+  async getList(query = {
+    text: 'SELECT * FROM movie ORDER BY year ASC;',
+    values: [],
+  }) {
+      
       const res = await db.query(query);
 
       return res.rows;
@@ -30,9 +30,10 @@ class MoviesModel {
       text: `SELECT title FROM movie ${yearString} ORDER BY year ASC;`,
       values: year ? [year]: [],
     };
-    const res = await db.query(query);
 
-    return res.rows.map(item => item.title).join('\n');
+    const res = await this.getList(query);
+
+    return res.map(item => item.title).join('\n');
   }
 
   async addMovie(newMovie) {
@@ -65,6 +66,7 @@ class MoviesModel {
     };
 
     const res = await db.query(queryUpdate);
+
     return res.rows[0]
   }
 
