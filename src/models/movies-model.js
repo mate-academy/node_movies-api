@@ -25,9 +25,9 @@ class MoviesModel {
   }
 
   async getMoviesTitles(year) {
-    const byYear = year ? 'WHERE year = $1' : '';
+    const yearString = year ? 'WHERE year = $1' : '';
     const query = {
-      text: `SELECT title FROM movie ${byYear} ORDER BY year ASC;`,
+      text: `SELECT title FROM movie ${yearString} ORDER BY year ASC;`,
       values: year ? [year]: [],
     };
     const res = await db.query(query);
@@ -52,13 +52,13 @@ class MoviesModel {
       text: 'SELECT * FROM movie WHERE id = $1;',
       values: [id],
     };
-    const findMovie = await db.query(queryFind);
+    const foundMovie = await db.query(queryFind);
 
-    if (findMovie) {
+    if (foundMovie) {
       const chagedMovie = {
-        imdbRating: imdbRating || findMovie.rows[0].imdbrating,
-        title: title || findMovie.rows[0].title,
-        year: year || findMovie.rows[0].year,
+        imdbRating: imdbRating || foundMovie.rows[0].imdbrating,
+        title: title || foundMovie.rows[0].title,
+        year: year || foundMovie.rows[0].year,
       }
 
       const queryUpdate = {
@@ -81,9 +81,9 @@ class MoviesModel {
       values: [id],
     };
 
-    const findMovie = await db.query(queryFind);
+    const foundMovie = await db.query(queryFind);
     
-    if (findMovie) {
+    if (foundMovie) {
       await db.query(queryDelete);
     }
   }
