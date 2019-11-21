@@ -4,9 +4,9 @@ const db = require('../db');
 
 class MoviesModel {
 
-  async getList() {
+  async getList(sortedBy) {
     const query = {
-      text: 'SELECT * FROM movie ORDER BY year ASC;',
+      text: `SELECT * FROM movie ORDER BY ${sortedBy} ASC;`,
       values: [],
     }
       const res = await db.query(query);
@@ -14,10 +14,10 @@ class MoviesModel {
       return res.rows;
   }
 
-  async getMovieById(id) {
+  async getMovieByParam(param, value) {
     const query = {
-      text: 'SELECT * FROM movie WHERE id = $1;',
-      values: [id],
+      text: `SELECT * FROM movie WHERE ${param} = $1;`,
+      values: [value],
     };
     const res = await db.query(query);
 
@@ -25,15 +25,15 @@ class MoviesModel {
   }
 
   async getMoviesTitles(year) {
-    const yearString = year ? 'WHERE year = $1' : '';
-    const query = {
-      text: `SELECT title FROM movie ${yearString} ORDER BY title ASC;`,
-      values: year ? [year]: [],
-    };
+    if (year) {
+      const res = await this.getMovieByParam('year', year);
 
-    const res = await db.query(query);
+      return res.title;
+    } else {
+      const res = await this.getList('year');
 
-    return res.rows.map(item => item.title).join('\n');
+      return res.map(item => item.title).join('\n');
+    }
   }
 
   async addMovie(newMovie) {

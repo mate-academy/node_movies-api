@@ -4,7 +4,7 @@ const moviesModel = require('../models/movies-model');
 const { handleError } = require('../handleError');
 
 exports.viewAllMovies = (req, res) => {
-  moviesModel.getList()
+  moviesModel.getList('year')
     .then(data => res.json(data))
     .catch(err => handleError(res, 500, err));
 }
@@ -12,7 +12,7 @@ exports.viewAllMovies = (req, res) => {
 exports.viewMovieById = (req, res) => {
   const { filmId } = req.params;
 
-  moviesModel.getMovieById(filmId)
+  moviesModel.getMovieByParam('id', filmId)
     .then(data => {
       if (data) {
         res.json(data);
