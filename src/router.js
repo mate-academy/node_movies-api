@@ -15,7 +15,7 @@ router.route('/titles')
 
 router.route('/:filmId')
   .get(controlerMovies.viewMovieById)
-  .post(checkContentType, parseJson, controlerMovies.changeMovie)
+  .put(checkContentType, parseJson, controlerMovies.changeMovie)
   .patch(checkContentType, parseJson, controlerMovies.changeMovie)
   .delete(controlerMovies.deleteMovie);
 
