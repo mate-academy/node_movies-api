@@ -4,7 +4,8 @@
   "description": "1. Fork this repo, clone the fork, and initialize a Node app in the folder. Add `node_modules` to `.gitignore`. Install `express` and `pg` to the folder.",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon ./src/server.js"
+    "start": "node ./src/server.js",
+    "server": "nodemon ./src/server.js"
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,7 @@
   "homepage": "https://github.com/mate-academy/api_movies#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "pg": "^7.13.0",
     "uuid": "^3.3.3"
   },
   "devDependencies": {
