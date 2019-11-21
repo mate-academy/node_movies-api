@@ -12,7 +12,7 @@ exports.viewAllMovies = (req, res) => {
 exports.viewMovieById = (req, res) => {
   const { filmId } = req.params;
 
-  moviesModel.getMovieByParam('id', filmId)
+  moviesModel.getMovieById(filmId)
     .then(data => {
       if (data) {
         res.json(data);
